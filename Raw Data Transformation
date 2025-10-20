@@ -1,0 +1,100 @@
+(1)The following transformations have been made to the original data 
+set which has been downloaded from the Coibion et al. (2024) replication files. 
+
+1. Initial Data Preparation
+Loaded survey data spanning multiple waves (7–16) with multiple variables 
+per household (hid).
+Some variables were only recorded in certain waves, leading to missing values.
+Dataset was originally in .dta (Stata) format and converted to .csv for Python/Excel.
+Reasoning: Do not have access to stata, can work with .csv in python and excel
+
+2. Handling Missing Values and Wave-Specific Variables
+Created wave-specific variables for variables collected in multiple waves.
+Example:
+cons_tot_wave10
+cons_tot_wave11
+Removed entirely blank columns (variables not collected in a given wave).
+Collapsed data by household ID (hid) where appropriate.
+For constant variables across waves (e.g., male, age), kept only one column.
+For wave-specific variables, kept all wave columns distinct.
+Reasoning: Able to collapse many observations onto 
+one by merging observations 
+with the same household id. Also able to remove blank cells
+due to a certain variable not being recorded in a certain 
+wave. Only created wave specific variables 
+for variables which could vary over waves.
+
+3. Filling Missing Values
+Back-filled and forward-filled missing values within 
+each household (hid) where applicable.
+Ensured that if a household answered a question in one wave 
+but not in another, the known value was propagated to fill missing entries.
+Dropped rows with excessive missing data that could not be reasonably filled.
+Reasoning: FIlled in missing responses with closest possible 
+response (accurate compromise)
+Dropped observation with too many missing cells - too much 
+approximation compromises accuracy
+
+4. Encoding Boolean and Yes/No Variables
+Converted all categorical binary responses:
+TRUE → 1
+FALSE → 0
+Yes → 1
+No → 0
+Ensured all remaining categorical variables were 
+converted into dummy variables (one-hot encoding):
+Format: <variable>_wave<wave#>_<category>
+Example:
+q2021_wave8_Working full-time (self-employed)
+Reasoning: Turning strings into numerical values fit for empirical analysis
+
+5. Dropping Unusable Observations
+Removed rows with any remaining missing values
+(to ensure a complete dataset for analysis).
+
+6. Variable Renaming and Labeling
+Applied a mapping of base variable names → descriptive 
+variable names (from your CES Data Excel mapping file).
+Example:
+q2021 → Employment Status
+pr2010 → Recruitment Type
+sh_sav_wave9 - LiquidAssets
+For wave-specific categorical dummy variables, replaced 
+only the base variable part with the descriptive name 
+while keeping the wave and category suffix:
+"q2021_wave8_Working full-time (self-employed)" 
+Employment Status-wave8-Working full-time (self-employed)
+\\ For constant variables, fully replaced with descriptive names.
+All transformations were applied to create a second row in the CSV:
+Row 1: original variable names (for reference)
+Row 2: descriptive variable names (for readability in Excel)
+Reasoning: Helpful for understand what variable 
+represents (initial variable names are not always intuitive or explanatory) 
+
+7. Creation of Data Subset
+The majority of variables collected in this data set were dropped, 
+with only the following remaining: Total Monthly Consumption 
+Oct. 2020, Total Monthly Consumption Jan. 2021, Control Group, 
+First Moment Treatment, Second Moment Europe Treatment, 
+First and Second Moment Treatment, Second Moment Domestic 
+Treatment, Europe Mean Growth Expectation Prior, Europe 
+Uncertainty in Growth Expectation Prior, Log Net Household 
+Income Sep. 2020, All country dummies, Household Size, 
+Male, High-School Educated, Post-Secondary Educated, Age, 
+Sufficient Liquidity. 
+This was done as Coibion et al. (2024) involves a 
+multitude of tables analyzing various aspects of their
+results, the majority of which are not germane to this
+specific subset of analysis. 
+
+8. Standardization of Continuous Variables 
+This transformation was done before the Lasso, Ridge and
+Random forest portion of analysis, in order to account for
+the fact that large continuous variables such as income 
+might be improperly perceived as more important to these
+models as they are distributed across a greater range. 
+Standardization was implemented such that the following 
+variables: Europe Mean Growth Expectation Prior, Europe 
+Uncertainty in Growth Expectation Prior, Log Net Household
+Income Sep. 2020 & Age had expected values of 0, and
+standard deviations of 1.

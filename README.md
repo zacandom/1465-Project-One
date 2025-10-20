@@ -1,1 +1,2 @@
 Most of the scripts where not used in the final paper, but where crucial in the process of finding out what works. The stuff in the paper is mostly in Asset Share.
+You will also find that the final version of this paper is much different than the draft, as I found some new things in my data when making edits that where far more interesting than anything I submitted in my draft. My apologies if this adjustment was to big, as you were unable to give me meaningful feedback on the draft.
